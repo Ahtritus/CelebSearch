@@ -18,12 +18,20 @@ dependencies {
     implementation("jakarta.annotation:jakarta.annotation-api")
     runtimeOnly("ch.qos.logback:logback-classic")
     implementation("io.micronaut:micronaut-validation")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.1")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.1")
+    implementation("io.cucumber:cucumber-java:7.3.2")
+    testImplementation("io.cucumber:cucumber-junit:7.3.2")
+    implementation("io.cucumber:cucumber-core:7.3.2")
+    testImplementation("org.assertj:assertj-core")
+    testImplementation("org.mockito:mockito-core:4.1.0")
+    testImplementation("org.mockito:mockito-junit-jupiter:2.23.0")
 
 }
 
 
 application {
-    mainClass.set("org.incubyte.Application")
+    mainClass.set("org.incubyte.celebsearch.Application")
 }
 java {
     sourceCompatibility = JavaVersion.toVersion("17")

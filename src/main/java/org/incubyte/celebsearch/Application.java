@@ -1,4 +1,4 @@
-package org.incubyte;
+package org.incubyte.celebsearch;
 
 import io.micronaut.runtime.Micronaut;
 

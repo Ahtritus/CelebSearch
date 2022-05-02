@@ -1,4 +1,4 @@
-package org.incubyte;
+package org.incubyte.celebsearch;
 
 import io.micronaut.runtime.EmbeddedApplication;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
