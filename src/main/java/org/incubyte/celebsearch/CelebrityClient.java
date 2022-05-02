@@ -1,12 +1,8 @@
 package org.incubyte.celebsearch;
 
-import io.micronaut.core.type.Argument;
-import io.micronaut.http.HttpRequest;
 import io.micronaut.http.annotation.Get;
 import io.micronaut.http.annotation.QueryValue;
-import io.micronaut.http.client.HttpClient;
 import io.micronaut.http.client.annotation.Client;
-import jakarta.inject.Inject;
 
 import java.util.Optional;
 
@@ -14,5 +10,8 @@ import java.util.Optional;
 public interface CelebrityClient {
 
   @Get("search/person{?query}{&api_key}")
-  Optional<Celebrity> searchByName(@QueryValue String query, @QueryValue String api_key);
+  Optional<Celebrities> searchByName(@QueryValue String query, @QueryValue String api_key);
+
+  @Get("person/{personId}{?api_key}")
+  Optional<CelebrityResult> getByPersonId(long personId, String api_key);
 }

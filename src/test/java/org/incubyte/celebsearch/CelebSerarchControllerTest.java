@@ -8,7 +8,6 @@ import io.micronaut.http.client.exceptions.HttpClientResponseException;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import jakarta.inject.Inject;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.function.Executable;
 
 import java.util.List;
 
@@ -23,34 +22,59 @@ public class CelebSerarchControllerTest {
   HttpClient httpClient;
 
   @Test
-  public void search_for_a_celeb_name_should_return_list_of_celebs() {
+  void search_for_a_celeb_name_should_return_list_of_celebs_with_their_details() {
     // Act
-    List<Result> retrievedCelebrities =
+    List<CelebrityResult> retrievedCelebrities =
         this.httpClient
             .toBlocking()
-            .retrieve(HttpRequest.GET("/persons/" + "Tom%20Hanks"), Argument.listOf(Result.class));
+            .retrieve(HttpRequest.GET("search/persons/" + "Tom%20Cruise"), Argument.listOf(
+                CelebrityResult.class));
 
     // Assert
     assertThat(retrievedCelebrities).isNotEmpty();
-    assertThat(retrievedCelebrities.get(0).getName()).isEqualTo("Tom Hanks");
+    assertThat(retrievedCelebrities.get(0).getName()).isEqualTo("Tom Cruise");
+    assertThat(retrievedCelebrities.get(0).getGender()).isEqualTo(2);
+    assertThat(retrievedCelebrities.get(0).getId()).isEqualTo(500L);
+    assertThat(retrievedCelebrities.get(0).getKnownForDepartment()).isEqualTo("Acting");
+    assertThat(retrievedCelebrities.get(0).getProfilePath()).isEqualTo("/8qBylBsQf4llkGrWR3qAsOtOU8O.jpg");
   }
 
   @Test
-  public void search_for_a_celeb_name_should_return_404_list_of_celebs() {
+  void search_for_a_celeb_name_should_return_404_list_of_celebs() {
     // Assert
     HttpClientResponseException httpClientResponseException =
         assertThrows(
             HttpClientResponseException.class,
             () -> {
-              List<Result> retrievedCelebrities =
+              List<CelebrityResult> retrievedCelebrities =
                   this.httpClient
                       .toBlocking()
                       .retrieve(
-                          HttpRequest.GET("/persons/" + "abc%20xyz"),
-                          Argument.listOf(Result.class));
+                          HttpRequest.GET("search/persons/" + "abc%20xyz"),
+                          Argument.listOf(CelebrityResult.class));
             });
 
     assertThat(httpClientResponseException.getMessage()).isEqualTo("Not Found");
     assertThat(httpClientResponseException.getStatus().getCode()).isEqualTo(404);
   }
+
+
+  @Test
+  void detailed_view_of_a_celebrity_returns_their_information() {
+    CelebrityResult celebrityResult = this.httpClient
+        .toBlocking()
+        .retrieve(HttpRequest.GET("person/" + 500L), Argument.of(CelebrityResult.class));
+
+    assertThat(celebrityResult).isNotNull();
+    assertThat(celebrityResult.getName()).isEqualTo("Tom Cruise");
+    assertThat(celebrityResult.getGender()).isEqualTo(2);
+    assertThat(celebrityResult.getId()).isEqualTo(500L);
+    assertThat(celebrityResult.getKnownForDepartment()).isEqualTo("Acting");
+    assertThat(celebrityResult.getProfilePath()).isEqualTo("/8qBylBsQf4llkGrWR3qAsOtOU8O.jpg");
+    assertThat(celebrityResult.getAge()).isEqualTo(59);
+    assertThat(celebrityResult.getHomepage()).isEqualTo("http://www.tomcruise.com");
+    assertThat(celebrityResult.getPlaceOfBirth()).isEqualTo("Syracuse, New York, USA");
+
+  }
+
 }

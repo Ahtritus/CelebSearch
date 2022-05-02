@@ -3,6 +3,7 @@ micronaut:
     name: celebSearch
   tmdb:
     api_key: 3074c42af940fd86278523b116782eef
+#    api_key: 641ac606c20f0792ae52dd4d0288e4ed
 netty:
   default:
     allocator:

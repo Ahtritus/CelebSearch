@@ -7,15 +7,19 @@ import java.util.Optional;
 
 @Controller("/")
 public class CelebrityController {
-    private CelebrityService celebrityService;
+    private final CelebrityService celebrityService;
 
     public CelebrityController(CelebrityService celebrityService) {
         this.celebrityService = celebrityService;
     }
 
-    @Get("/persons/{person}")
-    public Optional<Result[]> search(String person) {
-        Optional<Result[]> results = celebrityService.search(person);
-        return results;
+    @Get("search/persons/{person}")
+    public Optional<CelebrityResult[]> search(String person) {
+        return celebrityService.search(person);
+    }
+
+
+    public Optional<CelebrityResult> getPersonById(long personId) {
+        return celebrityService.getPersonById(personId);
     }
 }
