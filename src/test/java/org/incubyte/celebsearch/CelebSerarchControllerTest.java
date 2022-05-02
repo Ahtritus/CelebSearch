@@ -4,14 +4,16 @@ import io.micronaut.core.type.Argument;
 import io.micronaut.http.HttpRequest;
 import io.micronaut.http.client.HttpClient;
 import io.micronaut.http.client.annotation.Client;
+import io.micronaut.http.client.exceptions.HttpClientResponseException;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import jakarta.inject.Inject;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @MicronautTest
 public class CelebSerarchControllerTest {
@@ -23,36 +25,32 @@ public class CelebSerarchControllerTest {
   @Test
   public void search_for_a_celeb_name_should_return_list_of_celebs() {
     // Act
-    Celebrity retrieveCelebrities;
-
-    retrieveCelebrities =
+    List<Result> retrievedCelebrities =
         this.httpClient
             .toBlocking()
-            .retrieve(
-                HttpRequest.GET(
-                    "https://api.themoviedb.org/3/search/person?api_key=3074c42af940fd86278523b116782eef&query="
-                        + "Tom%20Hanks"),
-                Argument.of(Celebrity.class));
+            .retrieve(HttpRequest.GET("/persons/" + "Tom%20Hanks"), Argument.listOf(Result.class));
 
-    //Assert
-    assertThat(retrieveCelebrities.getResults()).isNotEmpty();
+    // Assert
+    assertThat(retrievedCelebrities).isNotEmpty();
+    assertThat(retrievedCelebrities.get(0).getName()).isEqualTo("Tom Hanks");
   }
 
   @Test
-  public void search_for_a_celeb_name_should_return_null_if_name_not_found() {
-    // Act
-    Celebrity retrieveCelebrities;
+  public void search_for_a_celeb_name_should_return_404_list_of_celebs() {
+    // Assert
+    HttpClientResponseException httpClientResponseException =
+        assertThrows(
+            HttpClientResponseException.class,
+            () -> {
+              List<Result> retrievedCelebrities =
+                  this.httpClient
+                      .toBlocking()
+                      .retrieve(
+                          HttpRequest.GET("/persons/" + "abc%20xyz"),
+                          Argument.listOf(Result.class));
+            });
 
-    retrieveCelebrities =
-            this.httpClient
-                    .toBlocking()
-                    .retrieve(
-                            HttpRequest.GET(
-                                    "https://api.themoviedb.org/3/search/person?api_key=3074c42af940fd86278523b116782eef&query="
-                                            + "AbcXyz"),
-                            Argument.of(Celebrity.class));
-
-    //Assert
-    assertThat(retrieveCelebrities.getResults()).isEmpty();
+    assertThat(httpClientResponseException.getMessage()).isEqualTo("Not Found");
+    assertThat(httpClientResponseException.getStatus().getCode()).isEqualTo(404);
   }
 }
