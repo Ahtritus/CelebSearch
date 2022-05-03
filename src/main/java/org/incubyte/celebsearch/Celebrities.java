@@ -1,10 +1,16 @@
 package org.incubyte.celebsearch;
 
+import java.util.List;
+
 public class Celebrities {
 
-    private CelebrityResult[] celebrityResults;
+    private List<SearchResult> celebrityResults;
 
-    public CelebrityResult[] getResults() {
+    public List<SearchResult> getResults() {
         return celebrityResults;
+    }
+
+    public void setResults(List<SearchResult> celebrityResults) {
+        this.celebrityResults = celebrityResults;
     }
 }

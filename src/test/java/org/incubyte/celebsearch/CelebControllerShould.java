@@ -1,5 +1,6 @@
 package org.incubyte.celebsearch;
 
+import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,7 +17,7 @@ class CelebControllerShould {
   void call_search_method_from_service() {
     CelebrityController celebrityController = new CelebrityController(celebrityService);
     String pathParameter = "Tom";
-    Optional<CelebrityResult[]> results = celebrityController.search(pathParameter);
+    Optional<List<SearchResult>> results = celebrityController.search(pathParameter);
     verify(celebrityService).search("Tom");
   }
 

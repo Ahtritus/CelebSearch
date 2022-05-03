@@ -3,6 +3,7 @@ package org.incubyte.celebsearch;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.Get;
 
+import java.util.List;
 import java.util.Optional;
 
 @Controller("/")
@@ -14,7 +15,7 @@ public class CelebrityController {
     }
 
     @Get("search/persons/{person}")
-    public Optional<CelebrityResult[]> search(String person) {
+    public Optional<List<SearchResult>> search(String person) {
         return celebrityService.search(person);
     }
 
